@@ -1,0 +1,102 @@
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  password_hash VARCHAR(200) NOT NULL,
+  full_name VARCHAR(120),
+  profile_image_url VARCHAR(500),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS resumes (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  template_key VARCHAR(64) NOT NULL,
+  full_name VARCHAR(160) NOT NULL,
+  headline VARCHAR(220),
+  email VARCHAR(220),
+  phone VARCHAR(40),
+  website VARCHAR(220),
+  location VARCHAR(220),
+  summary VARCHAR(5000),
+  profile_image_url VARCHAR(500),
+  share_token VARCHAR(64) UNIQUE,
+  share_token_created_at TIMESTAMP NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_resumes_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_resumes_user_id ON resumes(user_id);
+
+CREATE TABLE IF NOT EXISTS education (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  resume_id BIGINT NOT NULL,
+  position INT NOT NULL,
+  degree VARCHAR(180) NOT NULL,
+  school VARCHAR(180) NOT NULL,
+  location VARCHAR(180),
+  start_date DATE NULL,
+  end_date DATE NULL,
+  description VARCHAR(2000),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_education_resume
+    FOREIGN KEY (resume_id) REFERENCES resumes(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_education_resume_id ON education(resume_id);
+
+CREATE TABLE IF NOT EXISTS experience (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  resume_id BIGINT NOT NULL,
+  position INT NOT NULL,
+  role VARCHAR(180) NOT NULL,
+  company VARCHAR(180) NOT NULL,
+  description VARCHAR(2000),
+  start_date DATE NULL,
+  end_date DATE NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_experience_resume
+    FOREIGN KEY (resume_id) REFERENCES resumes(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_experience_resume_id ON experience(resume_id);
+
+CREATE TABLE IF NOT EXISTS skills (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  resume_id BIGINT NOT NULL,
+  position INT NOT NULL,
+  name VARCHAR(120) NOT NULL,
+  level VARCHAR(40),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_skills_resume
+    FOREIGN KEY (resume_id) REFERENCES resumes(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_skills_resume_id ON skills(resume_id);
+
+CREATE TABLE IF NOT EXISTS projects (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  resume_id BIGINT NOT NULL,
+  position INT NOT NULL,
+  name VARCHAR(180) NOT NULL,
+  url VARCHAR(220),
+  description VARCHAR(2000),
+  tech_stack VARCHAR(500),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_projects_resume
+    FOREIGN KEY (resume_id) REFERENCES resumes(id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX idx_projects_resume_id ON projects(resume_id);
+

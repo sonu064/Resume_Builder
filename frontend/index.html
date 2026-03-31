@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resume Builder</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+  <header class="appHeader">
+    <div class="brand">
+      <i class="fa-solid fa-pen-nib"></i>
+      <span>ResumeBuilder</span>
+    </div>
+    <div class="headerActions">
+      <button id="darkModeBtn" class="iconBtn" type="button" title="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button id="logoutBtn" class="btn btnGhost" type="button" style="display:none;">
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Login -->
+    <section id="viewLogin" class="view">
+      <div class="gridTwo">
+        <div class="hero">
+          <h1>Build a resume that gets noticed.</h1>
+          <p>Modern templates, live preview, and fast exporting. Designed to look great on mobile.</p>
+          <div class="pillRow">
+            <span class="pill"><i class="fa-solid fa-wand-magic-sparkles"></i> Live preview</span>
+            <span class="pill"><i class="fa-solid fa-file-pdf"></i> PDF export</span>
+            <span class="pill"><i class="fa-solid fa-shield-halved"></i> JWT secure</span>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Login</h2>
+          <form id="loginForm" novalidate>
+            <label>Email</label>
+            <input id="loginEmail" type="email" autocomplete="email" required />
+
+            <label>Password</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" required minlength="8" />
+
+            <button class="btn" type="submit">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>
+
+            <div id="loginError" class="alert alertError" style="display:none;"></div>
+          </form>
+
+          <p class="muted">
+            No account? <a href="#/register">Register</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Register -->
+    <section id="viewRegister" class="view" style="display:none;">
+      <div class="gridTwo">
+        <div class="card">
+          <h2>Create account</h2>
+          <form id="registerForm" novalidate>
+            <label>Full name</label>
+            <input id="registerFullName" type="text" required />
+
+            <label>Email</label>
+            <input id="registerEmail" type="email" autocomplete="email" required />
+
+            <label>Password</label>
+            <input id="registerPassword" type="password" autocomplete="new-password" required minlength="8" />
+
+            <button class="btn" type="submit">
+              <i class="fa-solid fa-user-plus"></i> Register
+            </button>
+
+            <div id="registerError" class="alert alertError" style="display:none;"></div>
+          </form>
+          <p class="muted">
+            Already have an account? <a href="#/login">Login</a>
+          </p>
+        </div>
+
+        <div class="hero heroAlt">
+          <h1>Templates that feel premium.</h1>
+          <p>Choose between Classic and Modern layouts. Preview updates as you type.</p>
+          <div class="templatePreviewRow">
+            <div class="templateChip"><i class="fa-regular fa-square-check"></i> Classic</div>
+            <div class="templateChip"><i class="fa-regular fa-square-check"></i> Modern</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="viewDashboard" class="view" style="display:none;">
+      <div class="viewHead">
+        <div>
+          <h2>Dashboard</h2>
+          <p class="muted">Create and manage your resumes.</p>
+        </div>
+        <div class="viewActions">
+          <button class="btn btnPrimary" type="button" id="btnCreateResume">
+            <i class="fa-solid fa-plus"></i> New Resume
+          </button>
+        </div>
+      </div>
+
+      <div id="createResumeModal" class="modal" style="display:none;">
+        <div class="modalCard">
+          <h3>Create new resume</h3>
+          <form id="createResumeForm" class="formGrid" novalidate>
+            <div>
+              <label>Full name</label>
+              <input id="createFullName" type="text" required />
+            </div>
+            <div>
+              <label>Template</label>
+              <select id="createTemplateKey">
+                <option value="minimal">Minimal</option>
+                <option value="classic">Classic</option>
+                <option value="modern">Modern</option>
+                <option value="creative">Creative</option>
+              </select>
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <label>Headline (optional)</label>
+              <input id="createHeadline" type="text" />
+            </div>
+            <div style="grid-column: 1 / -1;">
+              <button class="btn" type="submit">
+                <i class="fa-solid fa-save"></i> Create
+              </button>
+              <button class="btn btnGhost" type="button" id="btnCloseCreateModal">Cancel</button>
+            </div>
+          </form>
+          <div id="createResumeError" class="alert alertError" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="gridTwo">
+        <div class="card">
+          <h3>Your resumes</h3>
+          <div id="resumeList" class="resumeList"></div>
+        </div>
+        <div class="card cardSoft">
+          <h3>Quick tips</h3>
+          <ul class="tips">
+            <li>Add an email and phone for a stronger baseline.</li>
+            <li>Keep your skills to 8+ items.</li>
+            <li>Use impact-focused project descriptions.</li>
+          </ul>
+          <div class="mutedSmall">Try demo account: <code>demo@resume.com</code> / <code>demo1234</code></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Builder -->
+    <section id="viewBuilder" class="view" style="display:none;">
+      <div class="viewHead">
+        <div>
+          <h2>Resume Builder</h2>
+          <p class="muted">Step-by-step editing with live preview.</p>
+        </div>
+        <div class="viewActions">
+          <button class="btn btnGhost" type="button" id="btnScoreResume">
+            <i class="fa-solid fa-bolt"></i> Score
+          </button>
+          <button class="btn btnPrimary" type="button" id="btnPreviewResume">
+            <i class="fa-solid fa-eye"></i> Preview
+          </button>
+        </div>
+      </div>
+
+      <div class="builderGrid">
+        <div class="builderForm card">
+          <div class="stepRow">
+            <button class="stepBtn" type="button" data-step="1">1. Personal</button>
+            <button class="stepBtn" type="button" data-step="2">2. Education</button>
+            <button class="stepBtn" type="button" data-step="3">3. Experience</button>
+            <button class="stepBtn" type="button" data-step="4">4. Skills</button>
+            <button class="stepBtn" type="button" data-step="5">5. Projects</button>
+          </div>
+
+          <div id="builderStep1" class="stepPane"></div>
+          <div id="builderStep2" class="stepPane" style="display:none;"></div>
+          <div id="builderStep3" class="stepPane" style="display:none;"></div>
+          <div id="builderStep4" class="stepPane" style="display:none;"></div>
+          <div id="builderStep5" class="stepPane" style="display:none;"></div>
+
+          <div class="formFooter">
+            <button class="btn btnGhost" type="button" id="btnBackStep">Back</button>
+            <button class="btn" type="button" id="btnNextStep">Next</button>
+            <button class="btn btnPrimary" type="button" id="btnSaveResume">
+              <i class="fa-solid fa-save"></i> Save
+            </button>
+          </div>
+
+          <div id="builderError" class="alert alertError" style="display:none;"></div>
+          <div id="builderSuccess" class="alert alertSuccess" style="display:none;"></div>
+        </div>
+
+        <div class="builderPreview card">
+          <div class="previewHead">
+            <div class="templateSelector">
+              <label>Template</label>
+              <div
+                id="templateCardPicker"
+                class="templateCardGrid"
+                role="radiogroup"
+                aria-label="Choose resume template"
+              >
+                <input class="templateCardInput" type="radio" name="templateCard" id="templateCardMinimal" value="minimal" />
+                <label class="templateCardOption" for="templateCardMinimal" data-template-key="minimal">
+                  <span class="templateIcon"><i class="fa-regular fa-file-lines"></i></span>
+                  <span class="templateText">
+                    <strong>Minimal</strong>
+                    <small>Simple and clean</small>
+                  </span>
+                </label>
+
+                <input class="templateCardInput" type="radio" name="templateCard" id="templateCardClassic" value="classic" />
+                <label class="templateCardOption" for="templateCardClassic" data-template-key="classic">
+                  <span class="templateIcon"><i class="fa-solid fa-scroll"></i></span>
+                  <span class="templateText">
+                    <strong>Classic</strong>
+                    <small>Traditional structure</small>
+                  </span>
+                </label>
+
+                <input class="templateCardInput" type="radio" name="templateCard" id="templateCardModern" value="modern" />
+                <label class="templateCardOption" for="templateCardModern" data-template-key="modern">
+                  <span class="templateIcon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                  <span class="templateText">
+                    <strong>Modern</strong>
+                    <small>Bold and contemporary</small>
+                  </span>
+                </label>
+
+                <input class="templateCardInput" type="radio" name="templateCard" id="templateCardCreative" value="creative" />
+                <label class="templateCardOption" for="templateCardCreative" data-template-key="creative">
+                  <span class="templateIcon"><i class="fa-solid fa-palette"></i></span>
+                  <span class="templateText">
+                    <strong>Creative</strong>
+                    <small>Expressive visual style</small>
+                  </span>
+                </label>
+              </div>
+              <select id="templateKeySelect" class="templateNativeSelect" aria-label="Template fallback">
+                <option value="minimal">Minimal</option>
+                <option value="classic">Classic</option>
+                <option value="modern">Modern</option>
+                <option value="creative">Creative</option>
+              </select>
+            </div>
+            <div class="scoreBox" id="scoreBox" style="display:none;">
+              <div class="mutedSmall">Resume score</div>
+              <div class="scoreValue" id="scoreValue"></div>
+              <ul id="scoreSuggestions" class="scoreSuggestions"></ul>
+            </div>
+          </div>
+
+          <div class="previewWrap">
+            <div id="resumePreview"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview / Export -->
+    <section id="viewPreview" class="view" style="display:none;">
+      <div class="viewHead">
+        <div>
+          <h2>Resume Preview</h2>
+          <p class="muted">Print-ready layout with export & share options.</p>
+        </div>
+        <div class="viewActions">
+          <button class="btn btnGhost" type="button" id="btnDownloadPdf">
+            <i class="fa-solid fa-file-export"></i> Export PDF
+          </button>
+          <button class="btn btnGhost" type="button" id="btnShareResume">
+            <i class="fa-solid fa-share-nodes"></i> Share
+          </button>
+          <button class="btn btnPrimary" type="button" id="btnEditResume">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
+        </div>
+      </div>
+
+      <div class="builderGrid">
+        <div class="builderPreview card">
+          <div class="previewWrap">
+            <div id="resumePreviewFinal"></div>
+          </div>
+        </div>
+        <div class="card cardSoft">
+          <h3>Actions</h3>
+          <p class="muted">Dark mode also affects the UI only. PDF export uses the visible layout.</p>
+          <div class="formRow">
+            <div class="mutedSmall">
+              Tip: open in a new tab and use the browser print dialog if needed.
+            </div>
+          </div>
+          <div id="shareResult" class="alert alertSuccess" style="display:none;"></div>
+          <div id="previewError" class="alert alertError" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public Share -->
+    <section id="viewShared" class="view" style="display:none;">
+      <div class="viewHead">
+        <div>
+          <h2>Shared Resume</h2>
+          <p class="muted">Public preview.</p>
+        </div>
+        <div class="viewActions">
+          <button class="btn btnPrimary" type="button" id="btnBackHomeShared">
+            <i class="fa-solid fa-house"></i> Home
+          </button>
+        </div>
+      </div>
+      <div class="builderPreview card">
+        <div class="previewWrap">
+          <div id="resumeSharedFinal"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JS libs for PDF export (only used on preview page) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Templates -->
+  <script src="js/templates/classicTemplate.js"></script>
+  <script src="js/templates/modernTemplate.js"></script>
+  <script src="js/templates/minimalTemplate.js"></script>
+  <script src="js/templates/creativeTemplate.js"></script>
+
+  <!-- Feature scripts -->
+  <script src="js/pdfExport.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/resumeBuilder.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+

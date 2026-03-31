@@ -1,0 +1,15 @@
+# Maven / Spring Boot
+backend/target/
+
+# Node
+frontend/node_modules/
+
+# Env files
+.env
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store

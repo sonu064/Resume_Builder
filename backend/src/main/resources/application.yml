@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: resume-builder
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/resume_builder?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: root
+    password: SonuSingh@20564
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
+        jdbc:
+          batch_size: 50
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+  web:
+    resources:
+      static-locations: file:${app.uploads.dir}/
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-please-set-a-strong-secret}
+    expirationMs: ${JWT_EXPIRATION_MS:86400000}
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5500,http://localhost:3000}
+  uploads:
+    dir: ${UPLOAD_DIR:uploads}
+
+logging:
+  level:
+    com.resume.builder: INFO
+
