@@ -101,7 +101,6 @@
   <!-- ⚙️ BUILD -->
   <build>
     <plugins>
-
       <!-- 🔥 MOST IMPORTANT (makes executable JAR) -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
